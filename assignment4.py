@@ -162,36 +162,45 @@ def check(new_array, threshold, x, y, x0, y0):
             check(new_array, threshold, x, y1, x0 + x1, y0)  # southeast
 
 
-def convert(array, grayLevel, xIndex, yIndex):
+def convert12(pic, xIndex, yIndex):
     for i in range(0, xIndex):
         for j in range(0, yIndex):
-            if array[i][j] < 21:
-                array[i][j] == 0
-            elif array[i][j] >= 21 and array[i][j] < 42:
-                array[i][j] == 1
-            elif array[i][j] >= 42 and array[i][j] < 63:
-                array[i][j] == 2
-            elif array[i][j] >= 63 and array[i][j] < 84:
-                array[i][j] == 3
-            elif array[i][j] >= 84 and array[i][j] < 105:
-                array[i][j] == 4
-            elif array[i][j] >= 105 and array[i][j] < 126:
-                array[i][j] == 5
-            elif array[i][j] >= 126 and array[i][j] < 147:
-                array[i][j] == 6
-            elif array[i][j] >= 147 and array[i][j] < 168:
-                array[i][j] == 7
-            elif array[i][j] >= 168 and array[i][j] < 189:
-                array[i][j] == 8
-            elif array[i][j] >= 189 and array[i][j] < 210:
-                array[i][j] == 9
-            elif array[i][j] >= 210 and array[i][j] < 231:
-                array[i][j] == 10
+            if pic[i][j] < 21:
+                pic[i][j] = 0
+            elif pic[i][j] >= 21 and pic[i][j] < 42:
+                pic[i][j] = 1
+            elif pic[i][j] >= 42 and pic[i][j] < 63:
+                pic[i][j] = 2
+            elif pic[i][j] >= 63 and pic[i][j] < 84:
+                pic[i][j] = 3
+            elif pic[i][j] >= 84 and pic[i][j] < 105:
+                pic[i][j] = 4
+            elif pic[i][j] >= 105 and pic[i][j] < 126:
+                pic[i][j] = 5
+            elif pic[i][j] >= 126 and pic[i][j] < 147:
+                pic[i][j] = 6
+            elif pic[i][j] >= 147 and pic[i][j] < 168:
+                pic[i][j] = 7
+            elif pic[i][j] >= 168 and pic[i][j] < 189:
+                pic[i][j] = 8
+            elif pic[i][j] >= 189 and pic[i][j] < 210:
+                pic[i][j] = 9
+            elif pic[i][j] >= 210 and pic[i][j] < 231:
+                pic[i][j] = 10
             else:
-                array[i][j] == 12
+                pic[i][j] = 11
 
-    return array
+#    return pic
 
+def convert2(pic, xIndex, yIndex):
+    for i in range(0, xIndex):
+        for j in range(0, yIndex):
+            if pic[i][j] < 128:
+                pic[i][j] = 0
+            else:
+                pic[i][j] = 1
+
+ #   return pic
 
 if __name__ == '__main__':
     fileName = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/baboon.pgma"
@@ -203,10 +212,24 @@ if __name__ == '__main__':
     print(data[4]) # hight of the pic
     print(data[5]) # width of the pic
     # transfer the pgma 1D array into a 2D array and print out
-    A = np.array(data[0])
-    #B = np.reshape(A, (-1, length))
-    print(A)
-    convert(A, 12, data[4], data[5])
+    A1 = np.array(data[0])
+    A2 = np.array(data[0])
+    B1 = np.reshape(A1, (-1, length))
+    B2 = np.reshape(A2, (-1, length))
+    print(" 1 - dimentions array ( input pic ) :")
+    print(A1)
+    print("")
+    print("2 - dimentions array ( store in 2D array ) :")
+    print(B1)
+    print("")
+    convert12(B1, data[4], data[5])
+    print(" convert to 12 - gray level array :")
+    print(B1)
+    print("")
+    convert2(B2, data[4], data[5])
+    print(" convert to 2 - gray level array: ")
+    print(B2)
+
     #x_start = 0
     #y_start = 0
     # data[4] is the width of 2D array, data[5] is the hight of 2D array
