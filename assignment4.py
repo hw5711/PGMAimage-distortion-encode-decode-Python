@@ -3,89 +3,6 @@
 # To input threshold, in line 185, second parameter
 import numpy as np
 
-tmp1 = []
-tmp2 = []
-tmp3 = []
-
-class NewPicture:
-    a = []  # store the x of replaced location
-    b = []  # store the y of repladce location
-    c = []  # store the replaced number
-    h = 0
-    w = 0
-    arr2d =[h][w]
-    array1d = []
-
-    def __init__(self, height, width):
-        self.a = []
-        self.b = []
-        self.c = []
-        self.h = height
-        self.w = width
-
-    def set_arr(self,array):
-        self.arr2d = array
-
-    def add_a(self, num):
-        self.a.append(num)
-
-    def add_b(self, num):
-        self.b.append(num)
-
-    def add_c(self, num):
-        self.c.append(num)
-
-    def create_pic(self, hight, width):
-
-        self.w = width
-        self.h = hight
-        p_num = self.w * self.h
-
-        index = 0
-        counter = 0 # Count number of pixles has been changed
-        while (len(self.a) - index) != 0:
-            number1 = self.a[index]
-            number2 = self.b[index]
-            number3 = self.c[index]
-            index += 1
-            self.arr2d[number1][number2] = number3
-            counter += 1
-            # print("number1, number2, number3")
-            # print(number1, number2, number3)
-
-        print("Total number of changed pixels: ", counter)
-
-        # store two dimentions array into an one dimention array
-        for i in range(0, self.h):
-            for j in range(0, self.w):
-                self.array1d.append(self.arr2d[i][j])
-        print("")
-        print("updated 2d array")
-        print(self.arr2d)
-        # open file for writing
-        filename = 'baboon2-test256.pgm'
-        fout = open(filename, 'wb')
-
-        # define PGM Header
-        pgmheader = 'P2' + '\n' + str(self.w) + ' ' + str(self.h) + '\n' + str(255) + '\n'
-        pgmheader_byte = bytearray(pgmheader, 'utf-8')
-
-        # write the header to the file
-        fout.write(pgmheader_byte)
-
-        # write the data to the file
-        img = np.reshape(self.array1d, (self.h, self.w))
-        for j in range(self.h):
-            bnd = list(img[j, :])
-            bnd_str = np.char.mod('%d', bnd)
-            bnd_str = np.append(bnd_str, '\n')
-            bnd_str = [' '.join(bnd_str)][0]
-            bnd_byte = bytearray(bnd_str, 'utf-8')
-            fout.write(bnd_byte)
-
-        fout.close()
-
-
 def read_pgm(name):
     with open(name) as f:
         lines = f.readlines()
@@ -107,7 +24,6 @@ def read_pgm(name):
 
 
 def check(new_array, threshold, x, y, x0, y0):
-
     # count num of pixels
     var_quad = 0
     num_pixels = 0
@@ -230,25 +146,46 @@ if __name__ == '__main__':
     print(" convert to 2 - gray level array: ")
     print(B2)
 
-    #x_start = 0
-    #y_start = 0
     # data[4] is the width of 2D array, data[5] is the hight of 2D array
-    # second parameter is threshold
-    #print("")
-    #print("Threshold is: ", 256)
-    #check(B, 256, data[4], data[5], x_start, y_start)
+    # check(B, 256, data[4], data[5], x_start, y_start)
+    # Create 2 new pic2 object from the former conversion step
+    filename1 = 'baboon12gray.pgm'
+    fout1 = open(filename1, 'wb')
+    # define PGM Header
+    pgmheader1 = 'P2' + '\n' + str(data[4]) + ' ' + str(data[5]) + '\n' + str(255) + '\n'
+    pgmheader_byte1 = bytearray(pgmheader1, 'utf-8')
 
-    # create a new pic object
-    # pic = NewPicture(data[4], data[5])
-    #
-    # for i in range(0, len(tmp1)):
-    #     pic.add_a(tmp1[i])
-    # for j in range(0, len(tmp2)):
-    #     pic.add_b(tmp2[j])
-    # for k in range(0, len(tmp3)):
-    #     pic.add_c(tmp3[k])
-    #
-    # pic.set_arr(B)
-    # pic.create_pic(data[4],data[5])
+    # write the header to the file
+    fout1.write(pgmheader_byte1)
 
+    # write the data to the file
+    for j in range(data[5]):
+        bnd1 = list(B1[j, :])
+        bnd_str1 = np.char.mod('%d', bnd1)
+        bnd_str1 = np.append(bnd_str1, '\n')
+        bnd_str1 = [' '.join(bnd_str1)][0]
+        bnd_byte1 = bytearray(bnd_str1, 'utf-8')
+        fout1.write(bnd_byte1)
+    fout1.close()
+
+
+    filename2 = 'baboon2gray.pgm'
+    fout2 = open(filename2, 'wb')
+    # define PGM Header
+    pgmheader2 = 'P2' + '\n' + str(data[4]) + ' ' + str(data[5]) + '\n' + str(255) + '\n'
+    pgmheader_byte2 = bytearray(pgmheader2, 'utf-8')
+
+    # write the header to the file
+    fout2.write(pgmheader_byte2)
+
+    # write the data to the file
+    for j in range(data[5]):
+        bnd2 = list(B2[j, :])
+        bnd_str2 = np.char.mod('%d', bnd2)
+        bnd_str2 = np.append(bnd_str2, '\n')
+        bnd_str2 = [' '.join(bnd_str2)][0]
+        bnd_byte2 = bytearray(bnd_str2, 'utf-8')
+        fout2.write(bnd_byte2)
+
+    fout2.close()
 
