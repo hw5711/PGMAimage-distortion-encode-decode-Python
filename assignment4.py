@@ -162,9 +162,40 @@ def check(new_array, threshold, x, y, x0, y0):
             check(new_array, threshold, x, y1, x0 + x1, y0)  # southeast
 
 
+def convert(array, grayLevel, xIndex, yIndex):
+    for i in range(0, xIndex):
+        for j in range(0, yIndex):
+            if array[i][j] < 21:
+                array[i][j] == 0
+            elif array[i][j] >= 21 and array[i][j] < 42:
+                array[i][j] == 1
+            elif array[i][j] >= 42 and array[i][j] < 63:
+                array[i][j] == 2
+            elif array[i][j] >= 63 and array[i][j] < 84:
+                array[i][j] == 3
+            elif array[i][j] >= 84 and array[i][j] < 105:
+                array[i][j] == 4
+            elif array[i][j] >= 105 and array[i][j] < 126:
+                array[i][j] == 5
+            elif array[i][j] >= 126 and array[i][j] < 147:
+                array[i][j] == 6
+            elif array[i][j] >= 147 and array[i][j] < 168:
+                array[i][j] == 7
+            elif array[i][j] >= 168 and array[i][j] < 189:
+                array[i][j] == 8
+            elif array[i][j] >= 189 and array[i][j] < 210:
+                array[i][j] == 9
+            elif array[i][j] >= 210 and array[i][j] < 231:
+                array[i][j] == 10
+            else:
+                array[i][j] == 12
+
+    return array
+
+
 if __name__ == '__main__':
-    fileName = "/Users/huanwu/PyCharmProjects/project1/p1/baboon.pgma"
-    print("Opened file name baboon2.pgm")
+    fileName = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/baboon.pgma"
+    print("Opened file name baboon.pgm")
     data = read_pgm(fileName)
     length = data[4]
     print(data[2]) # max gray color reading in the pic
@@ -173,27 +204,28 @@ if __name__ == '__main__':
     print(data[5]) # width of the pic
     # transfer the pgma 1D array into a 2D array and print out
     A = np.array(data[0])
-    B = np.reshape(A, (-1, length))
-    print(B)
-    x_start = 0
-    y_start = 0
+    #B = np.reshape(A, (-1, length))
+    print(A)
+    convert(A, 12, data[4], data[5])
+    #x_start = 0
+    #y_start = 0
     # data[4] is the width of 2D array, data[5] is the hight of 2D array
     # second parameter is threshold
-    print("")
-    print("Threshold is: ", 256)
-    check(B, 256, data[4], data[5], x_start, y_start)
+    #print("")
+    #print("Threshold is: ", 256)
+    #check(B, 256, data[4], data[5], x_start, y_start)
 
     # create a new pic object
-    pic = NewPicture(data[4], data[5])
-
-    for i in range(0, len(tmp1)):
-        pic.add_a(tmp1[i])
-    for j in range(0, len(tmp2)):
-        pic.add_b(tmp2[j])
-    for k in range(0, len(tmp3)):
-        pic.add_c(tmp3[k])
-
-    pic.set_arr(B)
-    pic.create_pic(data[4],data[5])
+    # pic = NewPicture(data[4], data[5])
+    #
+    # for i in range(0, len(tmp1)):
+    #     pic.add_a(tmp1[i])
+    # for j in range(0, len(tmp2)):
+    #     pic.add_b(tmp2[j])
+    # for k in range(0, len(tmp3)):
+    #     pic.add_c(tmp3[k])
+    #
+    # pic.set_arr(B)
+    # pic.create_pic(data[4],data[5])
 
 
