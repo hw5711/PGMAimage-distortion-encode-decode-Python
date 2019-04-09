@@ -106,7 +106,6 @@ def convert12(pic, xIndex, yIndex):
             else:
                 pic[i][j] = 11
 
-#    return pic
 
 def convert2(pic, xIndex, yIndex):
     for i in range(0, xIndex):
@@ -116,7 +115,44 @@ def convert2(pic, xIndex, yIndex):
             else:
                 pic[i][j] = 1
 
- #   return pic
+
+def decode(picFileName):
+    inputPic = read_pgm(picFileName)
+    inputArray = np.array(inputPic[0])
+    if inputPic[2] > 1:
+        for i in range(0, data[3]):
+            if inputArray[i] == 0:
+                inputArray[i] = 10
+            elif inputArray[i] == 1:
+                inputArray[i] = 31
+            elif inputArray[i] == 2:
+                inputArray[i] = 52
+            elif inputArray[i] == 3:
+                inputArray[i] = 73
+            elif inputArray[i] == 4:
+                inputArray[i] = 94
+            elif inputArray[i] == 5:
+                inputArray[i] = 115
+            elif inputArray[i] == 6:
+                inputArray[i] = 136
+            elif inputArray[i] == 7:
+                inputArray[i] = 157
+            elif inputArray[i] == 8:
+                inputArray[i] = 178
+            elif inputArray[i] == 9:
+                inputArray[i] = 199
+            elif inputArray[i] == 10:
+                inputArray[i] = 220
+            else:
+                inputArray[i] =  241
+    else:
+        for i in range(0, data[3]):
+            if inputArray[i] == 0:
+                inputArray[i] = 64
+            elif inputArray[i] == 1:
+                inputArray[i] = 192
+
+    return inputArray
 
 if __name__ == '__main__':
     fileName = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/baboon.pgma"
@@ -189,3 +225,13 @@ if __name__ == '__main__':
 
     fout2.close()
 
+    filePath = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/"
+    newName1 = filePath+filename1+"a"
+    newName2 = filePath+filename2+"a"
+    C1 = decode(newName1)
+    C2 = decode(newName2)
+
+    print("c1 is ")
+    print(C1)
+    print("c2 is")
+    print(C2)
