@@ -154,6 +154,25 @@ def decode(picFileName):
 
     return inputArray
 
+def createFile(fname, B):
+    fout = open(fname, 'wb')
+    # define PGM Header
+    pgmheader = 'P2' + '\n' + str(data[4]) + ' ' + str(data[5]) + '\n' + str(255) + '\n'
+    pgmheader_byte = bytearray(pgmheader, 'utf-8')
+    # write the header to the file
+    fout.write(pgmheader_byte)
+    # write the data to the file
+    for j in range(data[5]):
+        bnd = list(B[j, :])
+        bnd_str = np.char.mod('%d', bnd)
+        bnd_str = np.append(bnd_str, '\n')
+        bnd_str = [' '.join(bnd_str)][0]
+        bnd_byte = bytearray(bnd_str, 'utf-8')
+        fout.write(bnd_byte)
+    fout.close()
+
+
+
 if __name__ == '__main__':
     fileName = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/baboon.pgma"
     print("Opened file name baboon.pgm")
@@ -183,55 +202,28 @@ if __name__ == '__main__':
     print(B2)
 
     # data[4] is the width of 2D array, data[5] is the hight of 2D array
-    # check(B, 256, data[4], data[5], x_start, y_start)
     # Create 2 new pic2 object from the former conversion step
     filename1 = 'baboon12gray.pgm'
-    fout1 = open(filename1, 'wb')
-    # define PGM Header
-    pgmheader1 = 'P2' + '\n' + str(data[4]) + ' ' + str(data[5]) + '\n' + str(255) + '\n'
-    pgmheader_byte1 = bytearray(pgmheader1, 'utf-8')
-
-    # write the header to the file
-    fout1.write(pgmheader_byte1)
-
-    # write the data to the file
-    for j in range(data[5]):
-        bnd1 = list(B1[j, :])
-        bnd_str1 = np.char.mod('%d', bnd1)
-        bnd_str1 = np.append(bnd_str1, '\n')
-        bnd_str1 = [' '.join(bnd_str1)][0]
-        bnd_byte1 = bytearray(bnd_str1, 'utf-8')
-        fout1.write(bnd_byte1)
-    fout1.close()
-
+    createFile(filename1, B1)
 
     filename2 = 'baboon2gray.pgm'
-    fout2 = open(filename2, 'wb')
-    # define PGM Header
-    pgmheader2 = 'P2' + '\n' + str(data[4]) + ' ' + str(data[5]) + '\n' + str(255) + '\n'
-    pgmheader_byte2 = bytearray(pgmheader2, 'utf-8')
-
-    # write the header to the file
-    fout2.write(pgmheader_byte2)
-
-    # write the data to the file
-    for j in range(data[5]):
-        bnd2 = list(B2[j, :])
-        bnd_str2 = np.char.mod('%d', bnd2)
-        bnd_str2 = np.append(bnd_str2, '\n')
-        bnd_str2 = [' '.join(bnd_str2)][0]
-        bnd_byte2 = bytearray(bnd_str2, 'utf-8')
-        fout2.write(bnd_byte2)
-
-    fout2.close()
+    createFile(filename2, B2)
 
     filePath = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/"
-    newName1 = filePath+filename1+"a"
-    newName2 = filePath+filename2+"a"
+    newName1 = filePath + filename1
+    newName2 = filePath + filename2
     C1 = decode(newName1)
     C2 = decode(newName2)
-
     print("c1 is ")
     print(C1)
     print("c2 is")
     print(C2)
+    # transfer c1 and c2 to 2-dimension arrays
+    D1 = np.reshape(C1, (-1, length))
+    D2 = np.reshape(C2, (-1, length))
+    decodeFile1 = 'baboon12gray-decoded.pgm'
+    decodeFile2 = 'baboon2gray-decoded.pgm'
+    createFile(decodeFile1, D1)
+    createFile(decodeFile2, D2)
+
+    
