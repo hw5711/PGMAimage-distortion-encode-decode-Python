@@ -1,6 +1,3 @@
-# To change input file, in line 165
-# To change output file, in line 66
-# To input threshold, in line 185, second parameter
 import numpy as np
 import numpy
 
@@ -60,8 +57,8 @@ def convert2(pic, xIndex, yIndex):
                 pic[i][j] = 1
 
 
-def decode(picFileName):
-    inputPic = read_pgm(picFileName)
+def decode(picfilename):
+    inputPic = read_pgm(picfilename)
     inputArray = np.array(inputPic[0])
     if inputPic[2] > 1:
         for i in range(0, data[3]):
@@ -97,6 +94,7 @@ def decode(picFileName):
                 inputArray[i] = 192
 
     return inputArray
+
 
 def createFile(fname, B):
     fout = open(fname, 'wb')
@@ -174,10 +172,9 @@ if __name__ == '__main__':
     newName2 = filePath + filename2
     C1 = decode(newName1)
     C2 = decode(newName2)
-    print("c1 is ")
-    print(C1)
-    print("c2 is")
-    print(C2)
+    print("\ndecoded 12-level gray image is : ", C1)
+    print("\ndecoded 2-level gray image is : ", C2)
+
     # Transfer c1 and c2 to 2-dimension arrays
     D1 = np.reshape(C1, (-1, length))
     D2 = np.reshape(C2, (-1, length))
@@ -190,12 +187,10 @@ if __name__ == '__main__':
     num1 = calDistortion(B1, D1, data[4], data[5])/data[3]
     num2 = calDistortion(B2, D2, data[4], data[5])/data[3]
 
-    print("distortion of 12-gray image is: ")
-    print(num1)
-    print("distortion of 2-gray image is: ")
-    print(num2)
+    print("\ndistortion of 12-gray image is: ", num1)
+    print("\ndistortion of 2-gray image is: ", num2)
 
-    # Create error images 
+    # Create error images
     E1 = absoluteDiff(B1, D1, data[4], data[5])
     E2 = absoluteDiff(B2, D2, data[4], data[5])
     errImage1 = 'baboon12gray--errorImage.pgm'
