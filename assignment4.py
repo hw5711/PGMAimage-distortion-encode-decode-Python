@@ -2,80 +2,24 @@
 # To change output file, in line 66
 # To input threshold, in line 185, second parameter
 import numpy as np
+import numpy
+
 
 def read_pgm(name):
     with open(name) as f:
         lines = f.readlines()
-
     # Ignore commented lines
     for l in list(lines):
         if l[0] == '#':
             lines.remove(l)
-
     # Makes sure it is ASCII format (P2)
     assert lines[0].strip() == 'P2'
-
     # Convert data to a list of integers
     data1 = []
     for line in lines[1:]:
         data1.extend([int(c) for c in line.split()])
-    # data[0]is the content, data[1]is the size of hight and width, data[2] is the max pixel, data[3]is the total pixels
+
     return (np.array(data1[3:]),(data1[1],data1[0]), data1[2],len(np.array(data1[3:])),data1[1], data1[0])
-
-
-def check(new_array, threshold, x, y, x0, y0):
-    # count num of pixels
-    var_quad = 0
-    num_pixels = 0
-    avg_pixels = 0
-    count = 0   # accumulate the num of pixels
-    count1 = 0  # accumulate actual pixel color
-    count2 = 0  # accumulate the varquad
-    # Count the pixels numbers
-    for i1 in range(x0, x):
-        for j1 in range(y0, y):
-            if new_array[i1][j1] != 0:
-                count += 1
-
-    num_pixels = count
-
-    # if (x - x0) <= 1 and (y - y0) <= 1 :
-    if count <=1 :
-        return
-
-    else:
-        # Count avg of pixels
-        for i2 in range(x0, x):
-            for j2 in range(y0, y):
-                count1 += new_array[i2][j2]
-
-        avg_pixels = count1 / num_pixels
-        # print("ave pix and count1 is: ", avg_pixels, count1)
-
-        # Count variance of quad
-        for i3 in range(x0, x):
-            for j3 in range(y0, y):
-                count2 += pow((new_array[i3][j3] - avg_pixels), 2)
-        var_quad = pow(count2 /(num_pixels-1), 0.5)
-        # var_quad = count2 / (num_pixels - 1)
-        # print("variance quad : ", var_quad)
-
-        if var_quad <= threshold:
-            for i4 in range(x0, x):
-                for j4 in range(y0, y):
-                    new_array[i4][j4] = avg_pixels
-                    tmp1.append(i4)
-                    tmp2.append(j4)
-                    tmp3.append(avg_pixels)
-            return
-
-        else:
-            x1 = (x - x0) // 2
-            y1 = (y - y0) // 2
-            check(new_array, threshold, x1, y, x0, y0+y1)  # northwest
-            check(new_array, threshold, x, y, x0 + x1, y0 + y1)  # northeast
-            check(new_array, threshold, x1, y1, x0, y0)  # southwest
-            check(new_array, threshold, x, y1, x0 + x1, y0)  # southeast
 
 
 def convert12(pic, xIndex, yIndex):
@@ -171,6 +115,25 @@ def createFile(fname, B):
         fout.write(bnd_byte)
     fout.close()
 
+def calDistortion(arr1, arr2, xIndex, yIndex):
+    counter = 0
+    for i in range(0, xIndex):
+        for j in range(0, yIndex):
+            counter = arr2[i][j] - arr1[i][j]
+
+    return counter
+
+
+def absoluteDiff(arr1, arr2, xIndex, yIndex):
+    arr = numpy.zeros([xIndex,yIndex])
+    for i in range(0, xIndex):
+        for j in range(0, yIndex):
+            if arr1[i][j] >= arr2[i][j]:
+                arr[i][j] = (arr1[i][j] - arr2[i][j])
+            else:
+                arr[i][j] = (arr2[i][j] - arr1[i][j])
+
+    return arr
 
 
 if __name__ == '__main__':
@@ -178,37 +141,34 @@ if __name__ == '__main__':
     print("Opened file name baboon.pgm")
     data = read_pgm(fileName)
     length = data[4]
-    print(data[2]) # max gray color reading in the pic
-    print(data[3]) # total pixels in the pic
-    print(data[4]) # hight of the pic
-    print(data[5]) # width of the pic
-    # transfer the pgma 1D array into a 2D array and print out
+    print(data[2]) # Max gray color reading in the pic
+    print(data[3]) # Total pixels in the pic
+    print(data[4]) # Width of the pic
+    print(data[5]) # Hight of the pic
+
+    # Transfer the pgma 1D array into a 2D array and print out
     A1 = np.array(data[0])
     A2 = np.array(data[0])
     B1 = np.reshape(A1, (-1, length))
     B2 = np.reshape(A2, (-1, length))
-    print(" 1 - dimentions array ( input pic ) :")
-    print(A1)
-    print("")
-    print("2 - dimentions array ( store in 2D array ) :")
-    print(B1)
-    print("")
-    convert12(B1, data[4], data[5])
-    print(" convert to 12 - gray level array :")
-    print(B1)
-    print("")
-    convert2(B2, data[4], data[5])
-    print(" convert to 2 - gray level array: ")
-    print(B2)
+    print("\n1 - dimentions array ( input pic ) :\n", A1)
+    print("\n2 - dimentions array ( store in 2D array ) :\n", B1)
 
-    # data[4] is the width of 2D array, data[5] is the hight of 2D array
-    # Create 2 new pic2 object from the former conversion step
+    # Convert image to 12 gray level image
+    convert12(B1, data[4], data[5])
+    print("\nconvert to 12 - gray level array :\n", B1)
+    # Convert image to 2 gray level image
+    convert2(B2, data[4], data[5])
+    print("\nconvert to 2 - gray level array: \n", B2)
+
+    # Create 2 images with 2 levels
     filename1 = 'baboon12gray.pgm'
     createFile(filename1, B1)
 
     filename2 = 'baboon2gray.pgm'
     createFile(filename2, B2)
 
+    # Decode 2 level images and store as pgma images
     filePath = "/Users/huanwu/Documents/GitHub/PGMAimage-distortion-encode-decode-Python/"
     newName1 = filePath + filename1
     newName2 = filePath + filename2
@@ -218,7 +178,7 @@ if __name__ == '__main__':
     print(C1)
     print("c2 is")
     print(C2)
-    # transfer c1 and c2 to 2-dimension arrays
+    # Transfer c1 and c2 to 2-dimension arrays
     D1 = np.reshape(C1, (-1, length))
     D2 = np.reshape(C2, (-1, length))
     decodeFile1 = 'baboon12gray-decoded.pgm'
@@ -226,4 +186,19 @@ if __name__ == '__main__':
     createFile(decodeFile1, D1)
     createFile(decodeFile2, D2)
 
-    
+    # Calculate the distortion
+    num1 = calDistortion(B1, D1, data[4], data[5])/data[3]
+    num2 = calDistortion(B2, D2, data[4], data[5])/data[3]
+
+    print("distortion of 12-gray image is: ")
+    print(num1)
+    print("distortion of 2-gray image is: ")
+    print(num2)
+
+    # Create error images 
+    E1 = absoluteDiff(B1, D1, data[4], data[5])
+    E2 = absoluteDiff(B2, D2, data[4], data[5])
+    errImage1 = 'baboon12gray--errorImage.pgm'
+    errImage2 = 'baboon2gray--errorImage.pgm'
+    createFile(errImage1, E1)
+    createFile(errImage2, E2)
